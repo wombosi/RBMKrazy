@@ -9,7 +9,7 @@ body {
 }
 
 #instrumentBar {
-    position: fixed;
+    /*position: fixed;*/
     left: 1;
     top:0; 
     /*width: 99vw;*/
@@ -22,7 +22,7 @@ body {
     background-color: #111;
 }
 
-#guages {
+#gauges {
     order: 1;
     flex-grow: 1;
     max-width: 270px;
@@ -60,7 +60,7 @@ body {
 
 
 #trendCanvas {
-    height: auto;
+    height: 250px;
     background-color: #fff;
 }
 
@@ -79,7 +79,7 @@ body {
     overflow: hidden;
 }
 
-.guage {
+.gauge {
     float: left;
 }
 
@@ -89,9 +89,9 @@ body {
     border: 0px;
     margin: 0px;
     z-index: 0;
-    position: fixed;
+    /*position: fixed;
     top: 0;
-    right: 0;
+    right: 0;*/
     /* background-color: black; */
 }
 
@@ -150,16 +150,16 @@ body {
 }
 
 .modal {
-    color: black;
-    position: fixed;
-    margin: 10px;
-    padding: 10px;
-    bottom: 20%;
-    left: 20%;
-    opacity: 0.95;
-    width: auto;
-    max-width: 60%;
-    height: auto;
+    color: black;              /**/
+    position: fixed;          /**//**/
+    margin: 10px;            /**//**/
+    padding: 10px;          /*    *//*  * /
+    bottom: 20%;           / *  * // * * /
+    left: 20%;            / *  * // *  */
+    opacity: 0.95;       /**//**/
+    width: auto;        /**//**/
+    max-width: 60%;    /**//**/
+    height: auto;     /**/
     background: #DDD;
     z-index: 3;
     border: 3px solid #73AD21;

@@ -1,17 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-
-
 <head>
     <meta charset="utf-8">
     <title>Reactor Game</title>
     <link rel="stylesheet" href="vendor/odometer-theme-car.css" />
     <link rel="stylesheet" href="reactor_ui.css" />
-
     <script src="vendor/d3.v5.min.js"></script>
     <script src="vendor/matter.alpha.js"></script>
-    <script src="guages.js"></script>
-
+    <script src="gauges.js"></script>
     <script>
         window.odometerOptions = {
             auto: true, // Don't automatically initialize everything with class 'odometer'
@@ -22,79 +18,77 @@
         };
     </script>
     <script src="vendor/odometer.js"></script>
-
 </head>
-
-<body onload="initializeGuages()" >
-    <canvas id="gameCanvas" width="800" height="700"></canvas>
-    <div id="instrumentBar">
-
-        <div id="guages">
-            <div id="goal">
-                <span id="pl"> Profit/Loss:</span>
-                <div id="money" class="odometer">0</div>
-            </div>
+<body onload="initializeGauges()" >
+    <div id="wrapMain">
+        <div style="top:15px;left:15px;position:absolute;">
+            <input type="button" value="X" onclick="document.getElementById('instrumentBar').setAttribute('style',(document.getElementById('instrumentBar').getAttribute('style') !== 'display:none' ? 'display:none' : 'display:flex'))">
         </div>
-
-        <div id="trend">
-            <canvas id="trendCanvas" height=250 ></canvas>
-        </div>
-
-
-        <div id="thermalCam">
-            Thermal Cam:<br>
-            <canvas id="heatMapCanvas" height=200 ></canvas>
-        </div>
-
-        <div id="controls">
-            <div class="slidecontainer">
-                <span class='sliderDisplay' id="mcp_display">MCP Speed: 50</span>
-                <input type="range" min="1" max="100" value="50" class="slider" id="mcp_speed">
-            </div>
-            <br>
-            <input type="button" value="Help" onclick="showHelp();">
-        </div>
-
-    </div>
-
-    
-
-    <div id="gameOver" class="modal" hidden>
-        <h1>Game Over</h1>
-        <span id="deathReason" data-value="0"> a bug in the game </span>
-        <hr>
-        <div style="float:right">
-            <input type="button" value="Try Again" onclick="reset();">
-        </div>
-
+	    <div id="instrumentBar" style="display:none">
+	        <div id="gauges">
+	            <div id="goal">
+	                <span id="pl"> Profit/Loss:</span>
+	                <div id="money" class="odometer">0</div>
+	            </div>
+	        </div>
+	        <div id="trend">
+	            <canvas id="trendCanvas" height=250 ></canvas>
+	        </div>
+	        <div id="thermalCam">
+	            Thermal Cam:<br>
+	            <canvas id="heatMapCanvas" height=200 ></canvas>
+	        </div>
+	        <div id="controls">
+	            <div class="slidecontainer">
+	                <span class='sliderDisplay' id="mcp_display">MCP Speed: 50</span>
+	                <input type="range" min="1" max="100" value="50" class="slider" id="mcp_speed">
+	            </div>
+	            <br>
+	            <input type="button" value="Help" onclick="showHelp();">
+	        </div>
+	    </div>
     </div>
 
     <div id="help" class="modal">
         <div style="float:right">
             <input type="button" value="X" onclick="hideModals();">
         </div>
-        <h1 style="margin: 0px;">RBMKrazy: a game of crossed sections</h1>
-
-        <div id="perf" style="float:right; font-size: smaller; text-align: right; font-family: monospace;"></div>
-
+        <div id="perf" style="font-size:smaller; text-align: right; font-family: monospace; /*float:right*/"></div>
+        <div style="/*float:right*/">
+            <div><small><code><b>Select&nbsp;Level:</b></code></small></div>
+            <select id="levelSelect">
+                <option value="level1">Criticality</option>
+                <option value="level2" disabled>MOAR PWR</option>
+                <option value="level3" disabled>Earthquake</option>
+            </select>
+        </div>
+        <div style="/*float:right*/">
+            <input type="button" value="Reset/Start Level" onclick="document.getElementById('instrumentBar').setAttribute('style','display:flex');reset();">
+        </div>
+        <!-- - - >
+        <h1 style="margin: 0px;">Reactor Game</h1>
+        < ! - - - - >
+        < ! - - - - >
+        <span>The RBMK (Russian: РБМК, "reaktor bolshoy moshchnosti kanalnyy" or реактор большой мощности канальный)</span>
+        <span>"high-power channel-type reactor" is a class of graphite-moderated nuclear power reactor designed</span>
+        <span>and built by the Soviet Union. The name refers to its unusual design where, instead of a large</span>
+        <span>steel pressure vessel surrounding the entire core, each fuel assembly is enclosed in an</span>
+        <span>individual 8 cm diameter pipe which allows the flow of cooling water around the fuel.</span>
         <ul>
             <li>Stack element blocks to build your reactor. </li>
-            <li>Monitor the guages and trendplot to keep the reactor under control. </li>
+            <li>Monitor the gauges and trendplot to keep the reactor under control. </li>
             <li>Adjust the Main Coolent Pump (MCP) Speed to control power output and core tempreture. </li>
             <li>Make money by producing power and medical isotopes. </li>
             <li>Beware of NRC emissions limits, earthquakes, and of course, meltdowns.</li>
         </ul>
-
-
         <div class="footer" style="font-size:x-small">
             <p id="note1">[1] This reactor simuation is not very accurate, for a more realistic simuation see
                 <a href="https://github.com/mit-crpg/OpenMOC">OpenMoc</a>
             </p>
         </div>
-
+        < ! - - - - >
         <hr>
         <div class="elementCards">
-
             <div class="card">
                 <img src="img/B.svg" alt="Boron " style="width:100%">
                 <div class="container">
@@ -102,7 +96,6 @@
                     <p>Absorbs neutrons. Used to keep the reaction under control and prevent off-site radation.</p>
                 </div>
             </div>
-
             <div class="card">
                 <img src="img/Be.svg" alt="Beryllium " style="width:100%">
                 <div class="container">
@@ -110,7 +103,6 @@
                     <p>Used to reflect neutrons back into the core.</p>
                 </div>
             </div>
-
             <div class="card">
                 <img src="img/C.svg" alt="Carbon " style="width:100%">
                 <div class="container">
@@ -118,7 +110,6 @@
                     <p>Used to slow down neutrons and to increase the chance of fission.</p>
                 </div>
             </div>
-
             <div class="card">
                 <img src="img/U.svg" alt="Uranium " style="width:100%">
                 <div class="container">
@@ -129,24 +120,26 @@
             </div>
         </div>
         <div style="clear:both;"></div>
-
+        < ! - -  - - >
         <hr>
         <div style="float:left">
-            <a href="https://github.com/darrell-rg/RBMKrazy">github.com/darrell-rg/RBMKrazy</a>
-
+            <a href="https://github.com/darrell-rg/RBMKrazy">github.com</a>
         </div>
-        <div style="float:right">
-            Select Level:
-            <select id="levelSelect">
-                <option value="level1">Criticality</option>
-                <option value="level2" disabled>MOAR PWR</option>
-                <option value="level3" disabled>Earthquake</option>
-            </select>
-
-            <input type="button" value="Reset/Start Level" onclick="reset();">
-        </div>
-
+        < ! - -  -->
     </div>
+
+    <div id="gameOver" class="modal hidden" style="display:none;">
+        <h1>Game Over</h1>
+        <span id="deathReason" data-value="0"> a bug in the game </span>
+        <hr>
+        <div style="float:right">
+            <input type="button" value="Try Again" onclick="reset();">
+        </div>
+    </div>
+    
+    <!--  -->
+    
+    <canvas id="gameCanvas" width="800" height="700"></canvas>
 
     <script src="reactorSim.js"></script>
     <script src="level1.js"></script>
@@ -161,7 +154,6 @@
             output.innerHTML = "MCP Speed: " + this.value;
         }
 
-
         function hideModals() {
             let modals = document.querySelectorAll(".modal");
 
@@ -171,12 +163,10 @@
             startSim();
         }
 
-
         function showHelp() {
             stopSim();
             document.getElementById("help").hidden = false;
         }
-
 
         function showGameOver(reason) {
             stopSim();
@@ -187,7 +177,6 @@
         function reset() {
             stopSim();
             let levelToLoad = document.getElementById("levelSelect").options[document.getElementById("levelSelect").selectedIndex].value;
-
 
             if (levelToLoad == 'level1') {
                 initStacks();
@@ -202,26 +191,23 @@
                         level.initStacks();
                         trendPlot.clearTrend();
                         hideModals();
-                    });
+                });
             }
-
         }
 
         //onresize="setTimeout(resizeCanvas,1000);"
 
-        
-        function initializeGuages() {
-            //startup the guages
+        function initializeGauges() {
+            //startup the gauges
             createGauges();
-            let guage_fps = 4;
+            let gauge_fps = 4;
             resizeCanvas();
-            setInterval(updateGauges, 1000 / guage_fps);
+            setInterval(updateGauges, 1000 / gauge_fps);
             setInterval(updateMoney, 1000);
-            trendPlot = new TrendPlot(trendContext, {}), guage_fps;
+            trendPlot = new TrendPlot(trendContext, {}), gauge_fps;
             trendPlot.clearTrend();
 
         }
-
 
         function updateMoney() {
             if (state.money < 0)
@@ -230,7 +216,6 @@
                 document.getElementById("pl").innerHTML = "Profit: $";
             document.getElementById("money").innerHTML = Math.abs(state.money);
         }
-
 
         function updateGauges() {
             trendPlot.advanceTrend();
@@ -250,9 +235,8 @@
             let range = Math.abs(gauge.config.min - gauge.config.max)
             let scaleValue = (rawValue - gauge.config.min) / range;
 
-            return scaleValue; b
+            return scaleValue;
         }
-
 
         function createGauges() {
             createGauge("Keff", "Keff", "Keffective how fast N population is growing", 0.995, 1.005, "rgba(0,123,255,1)");
@@ -263,8 +247,7 @@
             createGauge("maxFuelTemp", "Max Temp", "Max tempreture of fuel elements", 0, FUEL_EXPLODE_TEMP, "rgba(255,0,0,1)");
             createGauge("rad", "Rads", "Radation emited offsite", 0, 30, "rgba(255,0,240,1)", [0.5, 0.8]);
 
-
-            let gaugeContainer = d3.select("#guages")
+            let gaugeContainer = d3.select("#gauges")
                 .append("div")
                 .attr("id", "winCond");
 
@@ -273,17 +256,15 @@
 
         function createGauge(name, label, tooltip, min, max, trendColor, zones = [.75, .9]) {
 
-            let guage_id = name + "GaugeContainer";
-            let gaugeContainer = d3.select("#guages")
+            let gauge_id = name + "GaugeContainer";
+            let gaugeContainer = d3.select("#gauges")
                 .append("div")
-                .attr("id", guage_id)
+                .attr("id", gauge_id)
                 //.attr("class", "tooltip")
-                .attr("class", "guage")
+                .attr("class", "gauge")
                 .attr("data-value", 0);
 
-
-            //document.getElementById(guage_id).innerHTML = `<span class="tooltiptext">${tooltip}</span>`; 
-
+            //document.getElementById(gauge_id).innerHTML = `<span class="tooltiptext">${tooltip}</span>`;
 
             let config =
             {
@@ -305,14 +286,9 @@
             // config.greenZones = [{ from: 0, to:3 }];
 
             config.trendColor = trendColor;
-            gauges[name] = new Gauge(guage_id, config);
+            gauges[name] = new Gauge(gauge_id, config);
             gauges[name].render();
         }
-
     </script>
-
-
-
 </body>
-
 </html>
