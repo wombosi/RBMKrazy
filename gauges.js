@@ -1,5 +1,5 @@
 /*
-This is the main code for drawing of guages
+This is the main code for drawing of gauges
 
 */
 "use strict";
@@ -39,7 +39,7 @@ function Gauge(placeholderName, configuration) {
 			.attr("width", this.config.size)
 			.attr("height", this.config.size);
 
-		//outer rim of guage
+		//outer rim of gauge
 		this.body.append("svg:circle")
 			.attr("cx", this.config.cx)
 			.attr("cy", this.config.cy)
@@ -48,7 +48,7 @@ function Gauge(placeholderName, configuration) {
 			.style("stroke", "#000")
 			.style("stroke-width", "0.5px");
 
-		//main guage face
+		//main gauge face
 		this.body.append("svg:circle")
 			.attr("cx", this.config.cx)
 			.attr("cy", this.config.cy)
@@ -298,10 +298,12 @@ function TrendPlot(ctx, configuration, fps = 4) {
 
 		}
 
-		let imgData = ctx.getImageData(label_max_x, 0, WIDTH - label_max_x, HEIGHT);
-		this.ctx.fillStyle = this.config.backgroundColor;
-		this.ctx.fillRect(0, 0, WIDTH, HEIGHT);
-		this.ctx.putImageData(imgData, label_max_x + 1, 0);
+		if (ctx.height > 0) {
+			let imgData = ctx.getImageData(label_max_x, 0, WIDTH - label_max_x, HEIGHT);
+			this.ctx.fillStyle = this.config.backgroundColor;
+			this.ctx.fillRect(0, 0, WIDTH, HEIGHT);
+			this.ctx.putImageData(imgData, label_max_x + 1, 0);
+		}
 		frame_number++;
 	}
 
